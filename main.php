@@ -1,6 +1,7 @@
 <?php
 
 use mf\utils\ClassLoader;
+use tweeterapp\model\Tweet;
 use tweeterapp\model\User;
 
 require_once "src".DIRECTORY_SEPARATOR."mf".DIRECTORY_SEPARATOR."utils".DIRECTORY_SEPARATOR."ClassLoader.php";
@@ -21,3 +22,64 @@ $db = new Illuminate\Database\Capsule\Manager();
 $db->addConnection($config);
 $db->setAsGlobal();
 $db->bootEloquent();
+
+//SELECT * FROM
+$allUsers = User::select()->get();
+/*foreach($allUsers as $v) {
+    echo "Id: $v->id, name: $v->fullname\n";
+}*/
+$allTweets = User::select()->get();
+/*foreach($allTweets as $v) {
+    echo "Id: $v->id, text: $v->text\n";
+}*/
+
+//SELECT with conditions
+$allTweetsSortedByEdit = Tweet::select()->orderBy('updated_at')->get();
+/*foreach ($allTweetsSortedByEdit as $v) {
+    echo "Edit: $v->updated_at, text: $v->text\n";
+}*/
+$allTweetsWPositiveScore = Tweet::select()->where('score', '>', 0)->get();
+/*foreach ($allTweetsWPositiveScore as $v) {
+    echo "Id: $v->id, text: $v->text\n";
+}*/
+
+//Creating new entries
+/*$t = new Tweet();
+$t->text = "The Do Nothing Democrats are Con Artists, only looking to hurt the Republican Party and President. Their total focus is 2020, nothing more, and nothing less. The good news is that WE WILL WIN!!!!";
+$t->author = 1;
+//$t->save();*/
+
+/*$u = new User();
+$u->fullname = "Barrack Obama";
+$u->username = "obamaofficial";
+$u->level = 100;
+$u->save();*/
+
+//Association 1->*
+/*$tweet = Tweet::select()->first();
+echo $tweet->author()->first();
+$user = User::select()->where('id', '=', 1)->first();
+foreach ($user->tweets()->get() as $v) {
+    echo "Id: $v->id, text: $v->text\n";
+}*/
+
+//Association *->*
+/*$tweet = Tweet::select()->where('id', '=', 63)->first();
+foreach ($tweet->likedBy()->get() as $v) {
+    echo "$v->fullname\n";
+}*/
+
+/*$user = User::select()->where('id', '=', 10)->first();
+foreach ($user->liked()->get() as $v) {
+    echo "$v->text\n";
+}*/
+
+/*$followee = User::select()->where('id', '=', 9)->first();
+foreach ($followee->followedBy()->get() as $v) {
+    echo "$v->fullname\n";
+}*/
+
+/*$follower = User::select()->where('id', '=', 10)->first();
+foreach ($follower->follows()->get() as $v) {
+    echo "$v->fullname\n";
+}*/
