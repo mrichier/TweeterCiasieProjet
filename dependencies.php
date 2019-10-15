@@ -1,10 +1,13 @@
 <?php
 
-
 function classLoader() {
 
     require_once "src" . DIRECTORY_SEPARATOR . "mf" . DIRECTORY_SEPARATOR . "utils" . DIRECTORY_SEPARATOR . "ClassLoader.php";
     new mf\utils\ClassLoader('src'); // Auto-register
+}
+
+function request() {
+    return $req = new \mf\utils\HttpRequest();
 }
 
 function DB() {
@@ -26,5 +29,6 @@ function DB() {
     $db->bootEloquent();
 }
 
-DB();
 classLoader();
+$req = request();
+DB();
