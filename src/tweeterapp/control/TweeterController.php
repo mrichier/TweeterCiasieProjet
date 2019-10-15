@@ -19,6 +19,7 @@ namespace tweeterapp\control;
 use mf\router\Router;
 use tweeterapp\model\Tweet;
 use tweeterapp\model\User;
+use tweeterapp\view\TemporaryTweetView;
 
 class TweeterController extends \mf\control\AbstractController {
 
@@ -54,7 +55,7 @@ class TweeterController extends \mf\control\AbstractController {
          */
         //Display all tweets
         foreach(Tweet::select()->get() as $tweet) {
-            echo "$tweet->text | ".$tweet->author()->first()->fullname.", $tweet->created_at\n";
+            echo TemporaryTweetView::lineTweetHtml($tweet);
         }
     }
 
@@ -87,11 +88,7 @@ class TweeterController extends \mf\control\AbstractController {
             $id = $this->request->get["id"];
             $tweet = Tweet::select()->where('id', '=', $id)->first();
             //html
-            echo "<p>$tweet->text | <a href=\""
-                    .Router::urlFor("userTweets", array("id"=>$tweet->author)) .'">'
-                    .$tweet->author()->first()->fullname.
-                '</a>'
-                .", $tweet->created_at : $tweet->score likes.</p>";
+            echo TemporaryTweetView::lineTweetHtml($tweet, true);
         }
     }
 
@@ -123,16 +120,14 @@ class TweeterController extends \mf\control\AbstractController {
          */
 
         if (isset($this->request->get["id"])) {
+            //Getting data
             $id = $this->request->get["id"];
             $user = User::select()->where('id', '=', $id)->first();
-            echo "$user->fullname @$user->username | $user->followers followers.<br>\n";
             $tweets = $user->tweets()->get();
+            //Displaying
+            echo TemporaryTweetView::lineUserHtml($user);
             foreach ($tweets as $tweet) {
-                echo "<a href='"
-                    .Router::urlFor("tweet", array("id"=>$tweet->id)).
-                    "'><p>$tweet->text | ".
-                    $tweet->author()->first()->fullname.
-                    ", $tweet->created_at : $tweet->score likes.</p></a>\n";
+                echo TemporaryTweetView::lineTweetHtml($tweet);
             }
         }
 
