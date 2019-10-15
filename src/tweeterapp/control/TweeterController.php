@@ -52,7 +52,7 @@ class TweeterController extends \mf\control\AbstractController {
          *  3 Retourner un block HTML qui met en forme la liste
          *
          */
-
+        //Display all tweets
         foreach(Tweet::select()->get() as $tweet) {
             echo "$tweet->text | ".$tweet->author()->first()->fullname.", $tweet->created_at\n";
         }
@@ -86,14 +86,13 @@ class TweeterController extends \mf\control\AbstractController {
         if (isset($this->request->get["id"])) {
             $id = $this->request->get["id"];
             $tweet = Tweet::select()->where('id', '=', $id)->first();
-            echo '<p>$tweet->text | <a href="'
+            //html
+            echo "<p>$tweet->text | <a href=\""
                     .Router::urlFor("userTweets", array("id"=>$tweet->author)) .'">'
                     .$tweet->author()->first()->fullname.
                 '</a>'
                 .", $tweet->created_at : $tweet->score likes.</p>";
         }
-
-        echo '';
     }
 
 
@@ -129,7 +128,11 @@ class TweeterController extends \mf\control\AbstractController {
             echo "$user->fullname @$user->username | $user->followers followers.<br>\n";
             $tweets = $user->tweets()->get();
             foreach ($tweets as $tweet) {
-                echo "$tweet->text | ".$tweet->author()->first()->fullname.", $tweet->created_at : $tweet->score likes.<br>\n";
+                echo "<a href='"
+                    .Router::urlFor("tweet", array("id"=>$tweet->id)).
+                    "'><p>$tweet->text | ".
+                    $tweet->author()->first()->fullname.
+                    ", $tweet->created_at : $tweet->score likes.</p></a>\n";
             }
         }
 
