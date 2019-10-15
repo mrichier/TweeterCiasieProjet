@@ -22,13 +22,18 @@ class Router extends AbstractRouter
         self::$aliases["default"] = $url;
     }
 
+    /**
+     * Run a route requested with an http access to a registered "url" (= path after the website prefix)
+     */
     public function run()
     {
         $url = $this->http_req->path_info;
-        if (empty($url) && isset(self::$aliases["default"])) {
+        if ($this->urlIsEmpty($url) && isset(self::$aliases["default"])) {
+            //If url was left empty and there is a default route
             $url = self::$aliases["default"];
         } else if (!isset(self::$routes[$url])) {
-            echo "cant access $url\n";
+            //If 404
+            echo "404 - cant access $url\n";
             return;
         }
 
@@ -38,6 +43,11 @@ class Router extends AbstractRouter
         $ctrl->{$methodName}();
     }
 
+    /** Get the url of a route (useful for links)
+     * @param $route_name
+     * @param array $param_list List of GET parameters to add to the url
+     * @return string ready-to-use url
+     */
     public static function urlFor($route_name, $param_list = [])
     {
         //Getting path
@@ -51,8 +61,8 @@ class Router extends AbstractRouter
             //Adding get parameters
             if (!empty($param_list)) {
                 $url .= "?";
-                foreach ($param_list as $key=>$val) {
-                    $url.= "$key=$val&";
+                foreach ($param_list as $key => $val) {
+                    $url .= "$key=$val&";
                 }
                 //Removing unecessary & char
                 $url = rtrim($url, "&");
@@ -61,10 +71,14 @@ class Router extends AbstractRouter
             echo $route_name;
             $url = "404";
         }
-        return WEBSITE_PATH_PREFIX.$url;
+        return WEBSITE_PATH_PREFIX . $url;
     }
 
-    public static function executeRoute($alias) {
+    /** "Manually" run a route
+     * @param $alias
+     */
+    public static function executeRoute($alias)
+    {
         if (isset(self::$aliases[$alias])) {
             $url = self::$aliases[$alias];
         }
@@ -73,6 +87,15 @@ class Router extends AbstractRouter
         $methodName = self::$routes[$url][1];
         $ctrl = new $className;
         $ctrl->{$methodName}();
+    }
+
+    /** Check if a given url is empty
+     * @param $url
+     * @return bool true if url is empty, false otherwise
+     */
+    private function urlIsEmpty($url)
+    {
+        return empty($url) || trim($url) === '/';
     }
 
 }
