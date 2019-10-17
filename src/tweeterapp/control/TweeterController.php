@@ -17,11 +17,14 @@ namespace tweeterapp\control;
  */
 
 use mf\router\Router;
+use mf\view\TweeterViewPageEnum;
 use tweeterapp\model\Tweet;
 use tweeterapp\model\User;
 use tweeterapp\view\TemporaryTweetView;
+use tweeterapp\view\TweeterView;
 
-class TweeterController extends \mf\control\AbstractController {
+class TweeterController extends \mf\control\AbstractController
+{
 
 
     /* Constructeur :
@@ -32,7 +35,8 @@ class TweeterController extends \mf\control\AbstractController {
      *
      */
 
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -43,7 +47,8 @@ class TweeterController extends \mf\control\AbstractController {
      *
      */
 
-    public function viewHome(){
+    public function viewHome()
+    {
 
         /* Algorithme :
          *
@@ -54,9 +59,11 @@ class TweeterController extends \mf\control\AbstractController {
          *
          */
         //Display all tweets
-        foreach(Tweet::select()->get() as $tweet) {
+        /*foreach(Tweet::select()->get() as $tweet) {
             echo TemporaryTweetView::lineTweetHtml($tweet);
-        }
+        }*/
+        $tv = new TweeterView(\tweeterapp\model\Tweet::select()->get());
+        $tv->render(TweeterViewPageEnum::HOME);
     }
 
 
@@ -66,7 +73,8 @@ class TweeterController extends \mf\control\AbstractController {
      *
      */
 
-    public function viewTweet(){
+    public function viewTweet()
+    {
 
         /* Algorithme :
          *
@@ -88,7 +96,8 @@ class TweeterController extends \mf\control\AbstractController {
             $id = $this->request->get["id"];
             $tweet = Tweet::select()->where('id', '=', $id)->first();
             //html
-            echo TemporaryTweetView::lineTweetHtml($tweet, true);
+            $tv = new TweeterView($tweet);
+            $tv->render(TweeterViewPageEnum::TWEET);
         }
     }
 
@@ -99,7 +108,8 @@ class TweeterController extends \mf\control\AbstractController {
      *
      */
 
-    public function viewUserTweets(){
+    public function viewUserTweets()
+    {
 
         /*
          *
@@ -123,12 +133,9 @@ class TweeterController extends \mf\control\AbstractController {
             //Getting data
             $id = $this->request->get["id"];
             $user = User::select()->where('id', '=', $id)->first();
-            $tweets = $user->tweets()->get();
             //Displaying
-            echo TemporaryTweetView::lineUserHtml($user);
-            foreach ($tweets as $tweet) {
-                echo TemporaryTweetView::lineTweetHtml($tweet);
-            }
+            $tv = new TweeterView($user);
+            $tv->render(TweeterViewPageEnum::USERTWEETS);
         }
 
     }
