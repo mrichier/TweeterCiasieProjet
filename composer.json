@@ -1,5 +1,8 @@
 {
     "require": {
-        "illuminate/database": "^6.1"
+        "illuminate/database": "^6.1",
+      "ext-json": "*",
+      "ext-http": "*",
+      "ext-mongodb": "*"
     }
 }
