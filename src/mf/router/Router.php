@@ -28,6 +28,9 @@ class Router extends AbstractRouter
     public function run()
     {
         $url = $this->http_req->path_info;
+        if (substr($url, -1) !== '/') {
+            $url.="/";
+        }
         if ($this->urlIsEmpty($url) && isset(self::$aliases["default"])) {
             //If url was left empty and there is a default route
             $url = self::$aliases["default"];
