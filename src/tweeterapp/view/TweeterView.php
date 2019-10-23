@@ -154,15 +154,14 @@ EOT;
             case TweeterViewPageEnum::HOME :
                 $main = $this->homeTemplate();
                 return $this->mainTemplate($main);
-                break;
-            case TweeterViewPageEnum::USERTWEETS :
+            case TweeterViewPageEnum::USER_TWEETS :
                 $main = $this->userTweetsTemplate();
                 return $this->mainTemplate($main);
-                break;
             case TweeterViewPageEnum::TWEET :
                 $main = $this->tweetTemplate();
                 return $this->mainTemplate($main);
-                break;
+            case TweeterViewPageEnum::POST_TWEET:
+                return $this->postTemplate();
             default:
                 return "<div class='404'>404 NOT FOUND</div>";
                 break;
@@ -204,7 +203,21 @@ EOT;
                 </article>\n";
     }
 
-    protected function renderMenu() {
+    public function renderTweetForm()
+    {
+        $app_root = (new \mf\utils\HttpRequest())->root;
+        return <<<FORM
+    <form class="forms" action="${app_root}/main.php/send/" method="post">
+        <textarea name="tweet-text" class="forms-text"
+            placeholder="Partagez vos pensées"></textarea>
+            <input type="submit" name="submit" class="forms-button">
+    </form>
+FORM;
+
+    }
+
+    protected function renderMenu()
+    {
 
     }
 
@@ -221,11 +234,11 @@ EOT;
      **/
 
 
-    protected function mainTemplate($main, $header = '', $footer= '')
+    protected function mainTemplate($main, $header = '', $footer = '')
     {
         $header = $this->renderHeader();
         $footer = $this->renderFooter();
-                return <<<BODY
+        return <<<BODY
     <header>${header}</header>
     <main>
         <aside></aside>
@@ -235,14 +248,16 @@ EOT;
 BODY;
     }
 
-    protected function homeTemplate() {
+    protected function homeTemplate()
+    {
         $tweetList = $this->renderHome();
         return <<<HOME
         <section class="tweet-list">${tweetList}</section>
 HOME;
     }
 
-    protected function userTweetsTemplate() {
+    protected function userTweetsTemplate()
+    {
         $user = $this->data;
         $userLine = $this->renderUserAsLine($user);
         $tweetList = $this->renderUserTweets();
@@ -252,11 +267,25 @@ HOME;
 USER;
     }
 
-    protected function tweetTemplate() {
+    protected function tweetTemplate()
+    {
         $tweet = $this->renderTweetAsFullBlock($this->data);
         return <<<TWEET
         <section class="tweet-list">${tweet}</section>
 TWEET;
     }
 
+    protected function postTemplate()
+    {
+        $header = $this->renderHeader();
+        $footer = $this->renderFooter();
+        $form = $this->renderTweetForm();
+        return <<<BODY
+    <header>${header}</header>
+    <main>
+        ${form}
+    </main>
+    <footer>${footer}</footer>
+BODY;
+    }
 }

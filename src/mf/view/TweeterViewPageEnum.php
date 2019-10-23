@@ -9,6 +9,7 @@ class TweeterViewPageEnum
     const __default = self::HOME;
 
     public const HOME = "home";
-    public const USERTWEETS = "userTweets";
+    public const USER_TWEETS = "userTweets";
     public const TWEET = "tweet";
+    public const POST_TWEET = "postTweet";
 }

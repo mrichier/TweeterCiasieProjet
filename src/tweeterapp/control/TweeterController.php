@@ -135,8 +135,28 @@ class TweeterController extends \mf\control\AbstractController
             $user = User::select()->where('id', '=', $id)->first();
             //Displaying
             $tv = new TweeterView($user);
-            $tv->render(TweeterViewPageEnum::USERTWEETS);
+            $tv->render(TweeterViewPageEnum::USER_TWEETS);
         }
 
+
+    }
+
+    public function postTweet()
+    {
+        $tv = new TweeterView(null);
+        $tv->render(TweeterViewPageEnum::POST_TWEET);
+    }
+
+    public function sendTweet()
+    {
+        if (isset($_REQUEST['tweet-text'])) {
+            $filteredText = strip_tags(trim($_REQUEST['tweet-text']));
+            $tweet = new Tweet();
+            $tweet->text = $filteredText;
+            $tweet->author = -1; //TODO
+            $tweet->score = 0;
+
+            $tweet->save();
+        }
     }
 }
